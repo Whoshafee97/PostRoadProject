@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Road Wine & Liquor</title>
+    <style>
+        @font-face {
+            font-family: "SF Pro Display";
+            font-weight: 400;
+            src: url("https://www.apple.com/wss/fonts/SF-Pro-Display/v3/sf-pro-display_regular.woff2");
+        }
+
+        @font-face {
+            font-family: "SF Pro Display";
+            font-weight: 600;
+            src: url("https://www.apple.com/wss/fonts/SF-Pro-Display/v3/sf-pro-display_semibold.woff2");
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+            background: #000;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 22px;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            color: #f5f5f7;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .logo a:hover {
+            opacity: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            color: #f5f5f7;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        /* Active state for current section */
+        .nav-links a.active {
+            opacity: 1;
+        }
+
+        /* Responsive adjustments */
+        @media only screen and (max-width: 734px) {
+            nav {
+                padding: 0 16px;
+                height: 50px;
+            }
+            
+            .nav-links {
+                gap: 25px;
+            }
+            
+            .logo a {
+                font-size: 16px;
+            }
+            
+            .nav-links a {
+                font-size: 15px;
+            }
+        }
+
+        section {
+            padding: 6rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        #home {
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            position: relative;
+            max-width: none;
+        }
+
+        #home h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            padding: 0 2rem;
+        }
+
+        #home .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #home h1, #home .subtitle {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #6e6e73;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        #home .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .category-grid {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .category-grid.active {
+            display: grid;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .category-card {
+            aspect-ratio: 1;
+            position: relative;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: white;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .category-card h3 {
+            font-size: 1.75rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .category-card:hover h3 {
+            opacity: 1;
+        }
+
+        footer {
+            background-color: #000;
+            color: #f5f5f7;
+            padding: 60px 0 20px;
+            width: 100%;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .footer-section p, 
+        .footer-section a {
+            color: #a1a1a6;
+            font-size: 14px;
+            line-height: 1.6;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #fff;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .payment-methods img {
+            height: 18px;
+            width: auto;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .payment-methods img:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding: 20px 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            color: #a1a1a6;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1068px) {
+            .footer-content {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 734px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+            
+            .footer-section {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #about {
+                padding: 6rem 2rem;
+            }
+
+            #about h2 {
+                font-size: 2rem;
+            }
+
+            #about .subtitle {
+                font-size: 1.2rem;
+            }
+
+            #about .features {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: #1d1d1f;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .cta-button:hover {
+            background-color: transparent;
+            color: white;
+        }
+
+        /* Optional: Add animation for the button */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #home h1, #home .subtitle, #home .cta-button {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        /* Ensure smooth scrolling for the whole page */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Update media queries for responsive grid */
+        @media (max-width: 1200px) {
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .category-card h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 12px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .product-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .product-type {
+            padding: 1rem;
+            background-color: #f5f5f7;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .product-type:hover {
+            background-color: #e5e5e7;
+        }
+
+        #collection {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+                url('https://images.unsplash.com/photo-1597290282695-edc43d0e7129?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;  /* Changed to min-height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 2rem;  /* Added top padding to account for header */
+            max-width: none;
+            margin: 0;
+        }
+
+        #collection h2 {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .category-grid {
+            display: none;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* Adjust grid for different screen sizes */
+        @media (max-height: 800px) {
+            .category-card h3 {
+                font-size: 1.75rem;
+            }
+            
+            .category-grid {
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-height: 600px) {
+            #collection {
+                padding-top: 60px;  /* Smaller padding for very short screens */
+            }
+            
+            .category-card h3 {
+                font-size: 1.5rem;
+            }
+            
+            .category-grid {
+                gap: 1rem;
+            }
+        }
+
+        #about {
+            position: relative;
+            height: 100vh;
+            max-width: 100%;
+            overflow: hidden;
+            background-color: black; /* Fallback color */
+        }
+
+        #about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1510672981848-a1c4f1cb5ccf?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        #about .content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        #about h1 {
+            font-size: 56px;
+            line-height: 1.07143;
+            font-weight: 600;
+            letter-spacing: -.005em;
+            margin-bottom: .4em;
+            text-align: center;
+        }
+
+        #about .subtitle {
+            font-size: 28px;
+            line-height: 1.10722;
+            font-weight: 400;
+            letter-spacing: .004em;
+            color: #f5f5f7;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        @media only screen and (max-width: 1068px) {
+            #about h1 {
+                font-size: 48px;
+                line-height: 1.08349;
+                letter-spacing: -.002em;
+            }
+            
+            #about .subtitle {
+                font-size: 24px;
+                line-height: 1.16667;
+                letter-spacing: .009em;
+            }
+        }
+
+        @media only screen and (max-width: 734px) {
+            #about h1 {
+                font-size: 40px;
+                line-height: 1.1;
+                letter-spacing: 0em;
+            }
+            
+            #about .subtitle {
+                font-size: 19px;
+                line-height: 1.21053;
+                letter-spacing: .012em;
+            }
+        }
+
+        /* Add this to your root styles if not already present */
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        #reviews {
+            height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+        }
+
+        #reviews h2 {
+            color: #f5f5f7;
+            font-size: 56px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .reviews-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 20px;
+            color: #f5f5f7;
+        }
+
+        .review-stars {
+            color: #ffd700;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .reviewer-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 1200px) {
+            .reviews-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .reviews-container {
+                grid-template-columns: 1fr;
+            }
+            
+            #reviews h2 {
+                font-size: 40px;
+            }
+        }
+
+        /* Add Font Awesome in your HTML head */
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+        /* Update payment methods styles */
+        .payment-section {
+            grid-column: span 2;  /* Make payment section wider */
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .payment-methods img {
+            height: 20px;
+            width: auto;
+            opacity: 0.9;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/d32f4f2f15.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="#home">Post Road Wine & Liquor</a>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#collection">Collection</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- 1. Home Section -->
+        <section id="home">
+            <h1>Post Road Wine & Liquor</h1>
+            <p class="subtitle">Stratford's Premier Destination for Fine Wines & Spirits</p>
+            <a href="#collection" class="cta-button">Explore Our Collection</a>
+        </section>
+
+        <!-- 2. About Section -->
+        <section id="about">
+            <div class="content">
+                <h1>Our Story</h1>
+                <p class="subtitle">Founded in 2020, Post Road Wine & Liquor has established itself as Stratford's premier destination for fine wines and spirits. Our carefully curated selection represents the pinnacle of craftsmanship from around the world.</p>
+            </div>
+        </section>
+
+        <!-- 3. Collection Section -->
+        <section id="collection">
+            <h2>Our Collection</h2>
+            <div class="category-grid">
+                <div class="category-card" data-category="wine">
+                    <h3>Wine</h3>
+                </div>
+                <div class="category-card" data-category="whiskey">
+                    <h3>Whiskey</h3>
+                </div>
+                <div class="category-card" data-category="vodka">
+                    <h3>Vodka</h3>
+                </div>
+                <div class="category-card" data-category="gin">
+                    <h3>Gin</h3>
+                </div>
+                <div class="category-card" data-category="tequila">
+                    <h3>Tequila</h3>
+                </div>
+                <div class="category-card" data-category="liqueur">
+                    <h3>Liqueur</h3>
+                </div>
+                <div class="category-card" data-category="beer">
+                    <h3>Beer</h3>
+                </div>
+                <div class="category-card" data-category="ipa">
+                    <h3>IPA</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add this after the collection section -->
+        <section id="reviews">
+            <h2>Customer Reviews</h2>
+            <div class="reviews-container">
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Exceptional selection of wines! Staff is incredibly knowledgeable."</p>
+                    <p class="reviewer-name">- Michael S.</p>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Best liquor store in Stratford! Great prices and service."</p>
+                    <p class="reviewer-name">- Sarah L.</p>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Love their craft beer selection! Never disappoints."</p>
+                    <p class="reviewer-name">- James R.</p>
+                </div>
+                
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Fantastic variety of spirits. Staff is very helpful!"</p>
+                    <p class="reviewer-name">- Emily K.</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Amazing wine recommendations for every occasion."</p>
+                    <p class="reviewer-name">- David M.</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Great selection of local craft spirits. Top notch!"</p>
+                    <p class="reviewer-name">- Lisa P.</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Best prices in town. Friendly and knowledgeable staff."</p>
+                    <p class="reviewer-name">- Robert T.</p>
+                </div>
+
+                <div class="review-card">
+                    <div class="review-stars">★★★★</div>
+                    <p class="review-text">"Premium selection of whiskeys. My go-to store!"</p>
+                    <p class="reviewer-name">- Jennifer W.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <!-- Store Info -->
+            <div class="footer-section">
+                <h3>Post Road Wine & Liquor</h3>
+                <p>867 Barnum Ave Cutoff</p>
+                <p>Stratford, CT 06615</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#collection">Collection</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                </ul>
+            </div>
+
+            <!-- Store Hours -->
+            <div class="footer-section">
+                <h3>Store Hours</h3>
+                <p>Monday - Saturday: 9am - 10pm</p>
+                <p>Sunday: 10am - 6pm</p>
+            </div>
+
+            <!-- Contact -->
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Phone: <a href="tel:203-375-9555">203-375-9555</a></p>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="footer-section payment-section">
+                <h3>We Accept</h3>
+                <div class="payment-methods">
+                    <img src="https://cdn.simpleicons.org/visa/white" alt="Visa">
+                    <img src="https://cdn.simpleicons.org/mastercard/white" alt="Mastercard">
+                    <img src="https://cdn.simpleicons.org/americanexpress/white" alt="American Express">
+                    <img src="https://cdn.simpleicons.org/applepay/white" alt="Apple Pay">
+                    <img src="https://cdn.simpleicons.org/googlepay/white" alt="Google Pay">
+                    <img src="https://cdn.simpleicons.org/dinersclub/white" alt="Debit">
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 Post Road Wine & Liquor. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalContent" class="product-types-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const exploreButton = document.querySelector('.cta-button');
+            const categoryGrid = document.querySelector('.category-grid');
+            const modal = document.getElementById('categoryModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const closeModal = document.querySelector('.close-modal');
+
+            // Product types for each category
+            const productTypes = {
+                wine: ['Red Wine', 'White Wine', 'Rosé', 'Sparkling Wine', 'Dessert Wine', 'Port Wine'],
+                whiskey: ['Bourbon', 'Scotch', 'Irish Whiskey', 'Japanese Whiskey', 'Rye Whiskey', 'Canadian Whiskey'],
+                vodka: ['Plain Vodka', 'Flavored Vodka', 'Premium Vodka', 'Ultra Premium Vodka'],
+                gin: ['London Dry Gin', 'Plymouth Gin', 'Navy Strength Gin', 'Flavored Gin'],
+                tequila: ['Blanco', 'Reposado', 'Añejo', 'Extra Añejo', 'Mezcal'],
+                liqueur: ['Coffee Liqueur', 'Cream Liqueur', 'Fruit Liqueur', 'Herbal Liqueur'],
+                beer: ['Lager', 'Pilsner', 'Stout', 'Porter', 'Ale'],
+                ipa: ['American IPA', 'Double IPA', 'Session IPA', 'New England IPA']
+            };
+
+            // Show categories when "Explore Our Collection" is clicked
+            exploreButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const collectionSection = document.querySelector('#collection');
+                collectionSection.scrollIntoView({ behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    categoryGrid.classList.add('active');
+                }, 300);
+            });
+
+            // Make sure categories are visible when scrolling to collection section directly
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        categoryGrid.classList.add('active');
+                    }
+                });
+            });
+
+            observer.observe(document.querySelector('#collection'));
+
+            // Handle category card clicks
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    modalTitle.textContent = this.querySelector('h3').textContent;
+                    
+                    // Clear and populate modal content
+                    modalContent.innerHTML = '';
+                    productTypes[category].forEach(type => {
+                        const div = document.createElement('div');
+                        div.className = 'product-type';
+                        div.textContent = type;
+                        modalContent.appendChild(div);
+                    });
+                    
+                    modal.style.display = 'block';
+                });
+            });
+
+            // Close modal when clicking the close button or outside
+            closeModal.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', e => {
+                if (e.target === modal) modal.style.display = 'none';
+            });
+
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
