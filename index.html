@@ -1447,6 +1447,7 @@
             <div class="footer-section">
                 <h3>Contact Us</h3>
                 <p>Phone: <a href="tel:203-375-9555">203-375-9555</a></p>
+                <p>Email: <a href="mailto:postroadwineliquor@gmail.com">postroadwineliquor@gmail.com</a></p>
             </div>
 
             <!-- Payment Methods -->
@@ -1607,7 +1608,10 @@
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
             let currentSlide = 0;
-            const slideInterval = 5000; // Change slide every 5 seconds
+            
+            // Define different intervals for each slide
+            const slideIntervals = [7000, 5000]; // 7s for first slide, 5s for second
+            let autoSlideTimeout;
 
             function showSlide(index) {
                 slides.forEach(slide => slide.classList.remove('active'));
@@ -1618,15 +1622,28 @@
                 currentSlide = index;
             }
 
+            // Reset the auto-advance timer with current slide's interval
+            function resetAutoSlide() {
+                clearTimeout(autoSlideTimeout);
+                autoSlideTimeout = setTimeout(startAutoSlide, slideIntervals[currentSlide]);
+            }
+
             // Auto-advance slides
-            setInterval(() => {
+            function startAutoSlide() {
                 currentSlide = (currentSlide + 1) % slides.length;
                 showSlide(currentSlide);
-            }, slideInterval);
+                resetAutoSlide();
+            }
+
+            // Start the initial timer
+            resetAutoSlide();
 
             // Click handlers for dots
             dots.forEach((dot, index) => {
-                dot.addEventListener('click', () => showSlide(index));
+                dot.addEventListener('click', () => {
+                    showSlide(index);
+                    resetAutoSlide();
+                });
             });
         });
     </script>
