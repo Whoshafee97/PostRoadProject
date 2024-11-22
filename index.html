@@ -116,6 +116,7 @@
             max-width: 1000px;
             margin: 0 auto;
             text-align: center;
+            scroll-margin-top: 60px;
         }
 
         #home {
@@ -550,9 +551,9 @@
         #about {
             position: relative;
             height: 100vh;
-            max-width: 100%;
+            max-width: none;
             overflow: hidden;
-            background-color: black;
+            padding-top: 60px;
         }
 
         #about::before {
@@ -1152,6 +1153,123 @@
                 font-size: 1rem;
             }
         }
+
+        /* About Section Styles */
+        #about {
+            position: relative;
+            height: 100vh;
+            max-width: none;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        /* First Slide - Holiday Theme */
+        .slide-1 {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url('https://images.unsplash.com/photo-1543589077-47d81606c1bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .holiday-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-1 h1 {
+            position: absolute;
+            top: 80px;  /* Position from top of viewport */
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 56px;
+            color: #fff;
+            margin: 0;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .holiday-message {
+            font-size: 28px;
+            line-height: 1.4;
+            color: #fff;
+            margin-top: -40px; /* Pull content up slightly */
+        }
+
+        .thank-you {
+            font-style: italic;
+            font-size: 36px;
+            color: #ffd700;
+            margin-top: 35px;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            #about {
+                padding-top: 50px;
+            }
+
+            .slide-1 h1 {
+                top: 60px;
+                font-size: 36px;
+            }
+            
+            .holiday-message {
+                font-size: 20px;
+                margin-top: -20px;
+            }
+            
+            .thank-you {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slide-1 h1 {
+                font-size: 36px;
+            }
+            
+            .holiday-message {
+                font-size: 20px;
+            }
+            
+            .thank-you {
+                font-size: 24px;
+            }
+        }
+
+        #snow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
     </style>
     <script src="https://kit.fontawesome.com/d32f4f2f15.js" crossorigin="anonymous"></script>
 </head>
@@ -1185,9 +1303,30 @@
 
         <!-- 2. About Section -->
         <section id="about">
-            <div class="content">
-                <h1>Our Story</h1>
-                <p class="subtitle">Founded in 2020, Post Road Wine & Liquor has established itself as Stratford's premier destination for fine wines and spirits. Our carefully curated selection represents the pinnacle of craftsmanship from around the world.</p>
+            <!-- First Slide -->
+            <div class="slide slide-1 active">
+                <div class="holiday-content">
+                    <h1>Happy Holidays!</h1>
+                    <div class="holiday-message">
+                        <p>Thank you for making us part of your celebrations this year.</p>
+                        <p>Wishing you joy, warmth, and wonderful moments with your loved ones.</p>
+                        <p class="thank-you">Thank you for your continued support!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Second Slide -->
+            <div class="slide slide-2">
+                <div class="content">
+                    <h1>Our Story</h1>
+                    <p class="subtitle">Founded in 2020, Post Road Wine & Liquor has established itself as Stratford's premier destination for fine wines and spirits. Our carefully curated selection represents the pinnacle of craftsmanship from around the world.</p>
+                </div>
+            </div>
+
+            <!-- Navigation Dots -->
+            <div class="slide-nav">
+                <span class="dot active" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
             </div>
         </section>
 
@@ -1251,7 +1390,7 @@
                 </div>
 
                 <div class="review-card">
-                    <div class="review-stars">★★★★★</div>
+                    <div class="review-stars">★★★★</div>
                     <p class="review-text">"Amazing wine recommendations for every occasion."</p>
                     <p class="reviewer-name">- David M.</p>
                 </div>
@@ -1380,13 +1519,18 @@
 
             observer.observe(document.querySelector('#collection'));
 
+            // Function to close modal
+            function hideModal() {
+                modal.style.display = 'none';
+            }
+
             // Handle category card clicks
             document.querySelectorAll('.category-card').forEach(card => {
-                card.addEventListener('click', function() {
+                card.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Prevent event from bubbling
                     const category = this.dataset.category;
                     modalTitle.textContent = this.querySelector('h3').textContent;
                     
-                    // Clear and populate modal content
                     modalContent.innerHTML = '';
                     productTypes[category].forEach(type => {
                         const div = document.createElement('div');
@@ -1399,10 +1543,29 @@
                 });
             });
 
-            // Close modal when clicking the close button or outside
-            closeModal.addEventListener('click', () => modal.style.display = 'none');
-            window.addEventListener('click', e => {
-                if (e.target === modal) modal.style.display = 'none';
+            // Close modal when clicking the close button
+            closeModal.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent event from bubbling
+                hideModal();
+            });
+
+            // Close modal when clicking outside the modal content
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    hideModal();
+                }
+            });
+
+            // Prevent clicks inside modal content from closing the modal
+            modalContent.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    hideModal();
+                }
             });
 
             // Smooth scroll for navigation links
@@ -1414,7 +1577,11 @@
                     const targetSection = document.querySelector(targetId);
                     
                     if (targetSection) {
-                        targetSection.scrollIntoView({
+                        const headerHeight = document.querySelector('header').offsetHeight;
+                        const targetPosition = targetSection.offsetTop - headerHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
                             behavior: 'smooth'
                         });
                     }
@@ -1436,7 +1603,122 @@
                     document.body.classList.remove('menu-open');
                 });
             });
+
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            let currentSlide = 0;
+            const slideInterval = 5000; // Change slide every 5 seconds
+
+            function showSlide(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                dots.forEach(dot => dot.classList.remove('active'));
+                
+                slides[index].classList.add('active');
+                dots[index].classList.add('active');
+                currentSlide = index;
+            }
+
+            // Auto-advance slides
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }, slideInterval);
+
+            // Click handlers for dots
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => showSlide(index));
+            });
         });
+    </script>
+
+    <canvas id="snow"></canvas>
+    <script>
+        (function() {
+            const canvas = document.getElementById('snow');
+            const ctx = canvas.getContext('2d');
+            const particles = [];
+            const particleCount = 200;
+
+            // Set canvas size
+            function setCanvasSize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            setCanvasSize();
+            window.addEventListener('resize', setCanvasSize);
+
+            // Snowflake particle
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * -canvas.height;
+                    this.size = Math.random() * 3 + 1; // Size between 1-4
+                    this.speed = Math.random() * 1 + 0.5; // Speed between 0.5-1.5
+                    this.swing = Math.random() * 3; // Horizontal swing
+                    this.swingCount = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.y += this.speed;
+                    this.x += Math.cos(this.swingCount) * this.swing;
+                    this.swingCount += 0.02;
+
+                    if (this.y > canvas.height) {
+                        this.reset();
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.fill();
+                }
+            }
+
+            // Create particles
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Get the about section and first slide
+                const aboutSection = document.getElementById('about');
+                const firstSlide = document.querySelector('.slide-1');
+                const rect = aboutSection.getBoundingClientRect();
+                
+                // Get current scroll position and viewport height
+                const scrollPosition = window.scrollY;
+                const aboutTop = aboutSection.offsetTop;
+                const aboutBottom = aboutTop + aboutSection.offsetHeight;
+                
+                // Check if we're exactly in the About section
+                const isInAboutSection = 
+                    scrollPosition >= aboutTop - 60 && // Subtract header height
+                    scrollPosition < aboutBottom - window.innerHeight;
+                    
+                const isFirstSlideActive = firstSlide.classList.contains('active');
+
+                // Only animate when exactly in About section and first slide is active
+                if (isInAboutSection && isFirstSlideActive) {
+                    particles.forEach(particle => {
+                        particle.update();
+                        particle.draw();
+                    });
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        })();
     </script>
 </body>
 </html> 
